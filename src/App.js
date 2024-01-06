@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState, useEffect } from 'react';
+import Dropzone, {useDropzone} from 'react-dropzone';
+import Papa from 'papaparse';
 
 function App() {
 
@@ -13,16 +15,51 @@ function App() {
     countWordLengths:[]
   })
 
+ 
+
   useEffect(()=>{
 
     calculateStats()
 
   },[wordsList])
 
+  useEffect(()=>{
+    setWordsList(text.split(" ").filter(t => t!=""))
+
+  },[text])
+
   const onInput = (event)=>{
     setText(event.target.value)
-    setWordsList(event.target.value.split(" ").filter(t => t!=""))
+    
   }
+
+  const onDrop = (event)=>{
+    // console.log(acceptedFiles[0].text);
+    console.log(event);
+
+    // const text = (async (event) => await event.dataTransfer.files[0].text)
+    // console.log(text);
+
+    const reader = new FileReader()
+    reader.onload = ()=>{
+      console.log(reader);
+      Papa.parse(reader.result,{
+        complete: (result)=>{
+          setText(result.data)
+          console.log(result.data);
+        }
+      })
+    }
+
+    // setText(event.target.value)
+    // setWordsList(event.target.value.split(" ").filter(t => t!=""))
+  }
+
+  const {acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    noClick:true,
+    onDrop,
+    // accept: {'.txt'},
+  });
 
   const avgWordLength = ()=>{
     return wordsList.reduce((avg, word)=> avg+=word.length/wordsList.length,0)
@@ -40,7 +77,7 @@ function App() {
   }
 
   const calculateStats = ()=>{
-    if (text.length==0){
+    if (wordsList.length==0){
       setStats(
         {
           numberWords:"0",
@@ -67,17 +104,25 @@ function App() {
     
   }
 
+
+
   return (
     <>
       <h1>Text Statistics</h1>
 
-      <input type='search' onChange={onInput}/>
+      <div {...getRootProps()} id = 'dropbox'>
+        <input {...getInputProps()} />
+      <input id='text' type='search' placeholder='Type your text here or Drag and drop a .txt file' onChange={onInput}/>
+
+      </div>
+
+
 
       <p>Total number of words: {stats.numberWords}</p>
       <p>Average word length:{stats.avgLength}</p>
       <p>Most frequently occurring word length: {stats.mostFreqWord}</p>
       <ul>A list of the number of words of each length: 
-        {stats.countWordLengths? stats.countWordLengths.map((element,i) => <li key = {i}>{element[1]} words if length {element[1]}</li>): null}
+        {stats.countWordLengths? stats.countWordLengths.map((element,i) => <li key = {i}>{element[1]} words of length {element[0]}</li>): null}
       </ul>
 
     

@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+#text {
+  width: 100%;
+}
+
+#dropbox {
+  margin:auto;
+  border: 2px dashed #ccc;
+  text-align: 'center';
+  cursor: 'pointer';
+  width: 50%
+};
+
+p,h1{
+  margin:auto;
+  text-align: center;
+}
