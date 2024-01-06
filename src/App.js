@@ -10,7 +10,7 @@ function App() {
     numberWords:"0",
     avgLength:0,
     mostFreqWord:"",
-    countWordLengths:{}
+    countWordLengths:[]
   })
 
   useEffect(()=>{
@@ -26,6 +26,17 @@ function App() {
 
   const avgWordLength = ()=>{
     return wordsList.reduce((avg, word)=> avg+=word.length/wordsList.length,0)
+  }
+
+  const calculateFreq=()=>{
+
+    // let freqs = Array(Math.max((wordsList)=>wordsList.)
+
+    return wordsList.reduce((freqs,word)=> {
+      freqs[word.length]? freqs[word.length]+=1: freqs[word.length]=1
+      return freqs
+    }
+    ,{})
   }
 
   const calculateStats = ()=>{
@@ -44,6 +55,11 @@ function App() {
     updatedStats.numberWords = wordsList.length
     updatedStats.avgLength = avgWordLength()
 
+    const freqs = calculateFreq()
+    console.log(freqs);
+    updatedStats.mostFreqWord = Object.keys(freqs).find((length)=>freqs[length]==Math.max.apply(Object.values(freqs)))
+    updatedStats.countWordLengths=Object.entries(freqs)
+
 
     setStats(updatedStats)
     }
@@ -58,8 +74,8 @@ function App() {
 
       <p>Total number of words: {stats.numberWords}</p>
       <p>Average word length:{stats.avgLength}</p>
-      <p>Most frequently occurring word length:</p>
-      <p>A list of the number of words of each length:</p>
+      <p>Most frequently occurring word length: {stats.mostFreqWord}</p>
+      {/* <p>A list of the number of words of each length: {stats.countWordLengths} </p> */}
 
     
     </>
