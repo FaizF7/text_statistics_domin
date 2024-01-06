@@ -46,7 +46,7 @@ function App() {
           numberWords:"0",
           avgLength:0,
           mostFreqWord:"",
-          countWordLengths:{}
+          countWordLengths:null
         }
       )
     }
@@ -57,7 +57,8 @@ function App() {
 
     const freqs = calculateFreq()
     console.log(freqs);
-    updatedStats.mostFreqWord = Object.keys(freqs).find((length)=>freqs[length]==Math.max.apply(Object.values(freqs)))
+    updatedStats.mostFreqWord = Object.keys(freqs).filter((length)=>freqs[length]==Math.max(...Object.values(freqs)))
+    // console.log(Math.max(...Object.values(freqs)))
     updatedStats.countWordLengths=Object.entries(freqs)
 
 
@@ -70,12 +71,14 @@ function App() {
     <>
       <h1>Text Statistics</h1>
 
-      <input type='text' onChange={onInput}/>
+      <input type='search' onChange={onInput}/>
 
       <p>Total number of words: {stats.numberWords}</p>
       <p>Average word length:{stats.avgLength}</p>
       <p>Most frequently occurring word length: {stats.mostFreqWord}</p>
-      {/* <p>A list of the number of words of each length: {stats.countWordLengths} </p> */}
+      <ul>A list of the number of words of each length: 
+        {stats.countWordLengths? stats.countWordLengths.map((element,i) => <li key = {i}>{element[1]} words if length {element[1]}</li>): null}
+      </ul>
 
     
     </>
